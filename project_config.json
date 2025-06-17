@@ -1,0 +1,32 @@
+{
+  "CloudFrontWAFStackName": "CloudFrontWAFStack",
+  "CourseStackName": "CourseStack",
+  "QnAStackName": "QnAStack",
+  "existing_vpc_id": "",
+  "model_id": "anthropic.claude-3-5-sonnet-20240620-v1:0",
+  "embeddings_model_id": "amazon.titan-embed-text-v2:0",
+  "qna_model_id": "anthropic.claude-3-5-sonnet-20240620-v1:0",
+  "embeddings_vector_size": 1024,
+  "vector_index_name": "couse-content-default-index",
+  "metadata_field": "course_content_metadata",
+  "text_field": "course_content_text_chunk",
+  "vector_field": "couse-content-default-vector",
+  "vpc": {
+    "cidr_range": "10.0.0.0/16",
+    "cidr_mask": 24
+  },
+  "stack_name_prefix": "Genk01-BedrockCourse-",
+  "reuse_existing": {
+    "user_pool_id": "us-east-1_dFyTl7Ab1",
+    "existing_bucket": "genk01-webappnestedstackweba-websitebucket4326d7c2-sto8uwvirujy",
+    "existing_queue_url": "https://sqs.us-east-1.amazonaws.com/796973472728/Genk01-UseCaseManagementSetupUseCaseMa-UseCaseManagementDLQ738693BC-fLN2YDAH7sxM",
+    "parent_stack": "Genk01",
+    "region": "us-east-1"
+  },
+  "environment": "genk01-extension",
+  "cost_optimization": {
+    "enable_auto_scaling": true,
+    "use_on_demand_billing": true,
+    "enable_resource_cleanup": true
+  }
+}

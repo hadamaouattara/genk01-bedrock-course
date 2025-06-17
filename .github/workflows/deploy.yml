@@ -1,0 +1,65 @@
+name: Deploy Bedrock Course Generator
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  AWS_REGION: us-east-1
+
+# Permissions OIDC requises
+permissions:
+  id-token: write   # Requis pour demander le JWT OIDC
+  contents: read    # Requis pour actions/checkout
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502
+        with:
+          role-to-assume: arn:aws:iam::796973472728:role/github.to.aws.oicd
+          role-session-name: github-actions-bedrock-session
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Install AWS CDK
+        run: |
+          npm install -g aws-cdk
+
+      - name: CDK Bootstrap (if needed)
+        run: |
+          source .venv/bin/activate
+          cdk bootstrap
+
+      - name: CDK Synth
+        run: |
+          source .venv/bin/activate
+          cdk synth --all
+
+      - name: CDK Deploy
+        run: |
+          source .venv/bin/activate
+          cdk deploy --all --require-approval never
+
+      - name: Verify deployment
+        run: |
+          echo "Deployment completed successfully!"
+          aws bedrock list-foundation-models --region ${{ env.AWS_REGION }} --max-items 1
